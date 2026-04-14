@@ -1,0 +1,14 @@
+global using Backend.Application.Auth.Commands.Authenticate;
+global using Backend.Application.Auth.Commands.Connect;
+global using Backend.Application.Auth.Commands.Disconnect;
+global using Backend.Application.Auth.Queries.GetSessionStatus;
+global using Backend.Application.Messages.Commands.Download;
+global using Backend.Application.Messages.Commands.Upload;
+global using Backend.Application.Messages.DTOs;
+global using Backend.Application.Messages.Queries.GetCachedMessages;
+global using Backend.Console.Commands;
+global using Backend.Console.Output;
+global using Backend.Domain.Aggregates;
+global using Backend.Domain.SeedWork;
+global using Backend.Infrastructure.Smp.Repositories;
+global using Backend.Infrastructure.Smp.Services;
