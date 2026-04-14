@@ -18,8 +18,15 @@ ISessionService sessionService)
             return Result.Failure(AuthErrors.InvalidCredentials);
         }
         
-        await sessionService.AuthenticateAsync(credentials, ct);
-        
+        try
+        {
+            await sessionService.AuthenticateAsync(credentials, ct);
+        }
+        catch (Exception)
+        {
+            return Result.Failure(AuthErrors.InvalidCredentials);
+        }
+
         session.MarkAsAuthenticated(credentials.Username);
         
         return Result.Success();
