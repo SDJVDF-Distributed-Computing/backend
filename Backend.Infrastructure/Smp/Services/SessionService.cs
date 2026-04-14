@@ -12,6 +12,12 @@ public sealed class SessionService : ISessionService, IAsyncDisposable
 
     public async Task ConnectAsync(ServerAddress address, CancellationToken ct = default)
     {
+        if (_connection is not null)
+        {
+            await _connection.DisposeAsync();
+            _connection = null;
+        }
+
         _connection = new SMPConnection(address, _certPath);
         await _connection.ConnectAsync(ct);
     }

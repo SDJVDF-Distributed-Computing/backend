@@ -18,6 +18,9 @@ ISessionService sessionService)
             return Result.Failure(AuthErrors.InvalidServerAddress);
         }
         
+        if (session.IsConnected || session.IsClosed)
+            session.Reset();
+
         await sessionService.ConnectAsync(serverAddress, ct);
         session.MarkAsConnected(serverAddress);
 

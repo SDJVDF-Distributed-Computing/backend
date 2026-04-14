@@ -14,7 +14,6 @@ public sealed class Session : BaseEntity
 
     public void MarkAsConnected(ServerAddress address)
     {
-        if (IsClosed) throw new InvalidOperationException("Cannot reconnect a closed session.");
         if (IsConnected) throw new InvalidOperationException("Session is already connected.");
 
         Address = address;
@@ -58,5 +57,14 @@ public sealed class Session : BaseEntity
         IsConnected = false;
         IsAuthenticated = false;
         RaiseDomainEvent(new SessionClosedEvent());
+    }
+
+    public void Reset()
+    {
+        IsConnected = false;
+        IsAuthenticated = false;
+        IsClosed = false;
+        Address = null;
+        AuthenticatedUsername = null;
     }
 }
