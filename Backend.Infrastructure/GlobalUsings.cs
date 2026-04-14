@@ -1,0 +1,10 @@
+global using System.Net.Security;
+global using System.Net.Sockets;
+global using System.Security.Cryptography.X509Certificates;
+global using System.Text;
+global using Backend.Domain.Entities;
+global using Backend.Application.Interfaces;
+global using Backend.Domain.Interfaces;
+global using Backend.Domain.ValueObjects;
+global using Backend.Infrastructure.Smp.Network;
+global using Backend.Infrastructure.Smp.Protocol;

@@ -1,0 +1,9 @@
+﻿global using Backend.Application.Auth.DTOs;
+global using Backend.Application.Common.Errors;
+global using Backend.Application.Messages.DTOs;
+global using Backend.Domain.Aggregates;
+global using Backend.Domain.Entities;
+global using Backend.Domain.SeedWork;
+global using Backend.Application.Interfaces;
+global using Backend.Domain.Interfaces;
+global using Backend.Domain.ValueObjects;
