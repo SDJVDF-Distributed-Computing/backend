@@ -1,8 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
-var allowedOrigins = builder.Configuration
-    .GetSection("Cors:AllowedOrigins")
-    .Get<string[]>() ?? [];
+var allowedOrigin = builder.Configuration["Cors:AllowedOrigin"]
+    ?? throw new InvalidOperationException("Cors:AllowedOrigin is not configured.");
 
 var certPath = builder.Configuration["Smp:CertPath"]
     ?? throw new InvalidOperationException("Smp:CertPath is not configured.");
@@ -11,7 +10,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
+        policy.WithOrigins(allowedOrigin)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();

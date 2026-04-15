@@ -67,12 +67,14 @@ Available commands: `connect`, `login`, `upload`, `download`, `messages`, `statu
 
 ## Configuration
 
-| Key | Default | Description |
-|---|---|---|
-| `Smp:CertPath` | `certs/smp_keystore.cer` | Path to pinned SMP server certificate |
-| `Cors:AllowedOrigins` | `http://localhost:3000` | Allowed frontend origins |
+All configuration is via environment variables. Copy `.env.example` as a reference:
 
-Environment variables use `__` as delimiter (e.g. `Smp__CertPath`).
+| Variable | Description |
+|---|---|
+| `Smp__CertPath` | Path to the pinned SMP server certificate |
+| `Cors__AllowedOrigin` | Allowed CORS origin |
+
+The `__` delimiter maps to nested config keys (`Smp__CertPath` → `Smp:CertPath`).
 
 ## API Reference
 
