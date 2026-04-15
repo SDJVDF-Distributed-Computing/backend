@@ -1,24 +1,18 @@
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "1234:5000"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Smp__CertPath: certs/smpserver.cer
-      Cors__AllowedOrigins__0: http://localhost:3000
-      Cors__AllowedOrigins__1: http://127.0.0.1:3000
-    volumes:
-      - ./certs:/app/certs:ro
-    depends_on:
-      - smp-server
-    restart: unless-stopped
-
   smp-server:
     image: ghcr.io/sdjvdf-distributed-computing/echo-server:main
     platform: linux/amd64
+    ports:
+      - "8443:8443"
     volumes:
-      - ./certs:/app/certs:ro
+      - smp-certs:/app/certs
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 8443 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  smp-certs:

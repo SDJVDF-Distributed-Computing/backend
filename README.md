@@ -21,28 +21,41 @@ Backend.Console        → Interactive CLI client
 
 ## Running Locally
 
-### With Docker Compose
+Docker Compose runs the SMP server dependency only.
 
-Place the SMP server certificate at `./certs/smpserver.cer` (skip if you want cert validation bypassed in dev):
+**1. Restore dependencies**
 
 ```bash
-docker compose up -d --build
+dotnet restore
 ```
 
-Services:
-| Service | Host | Port |
-|---|---|---|
-| REST API | `localhost` | `1234` |
-| SMP Server (echo) | `smp-server` | `8443` |
+**2. Start the SMP server**
 
-The API is reachable at `http://localhost:1234`. When connecting via the `/api/session/connect` endpoint from inside Docker, use `host: smp-server`.
+```bash
+docker compose up -d
+```
 
-### Without Docker
+**3. Copy the generated cert**
+
+The server generates a self-signed certificate on first start. Pull it out of the container so the API can pin it:
+
+```bash
+mkdir -p certs
+docker cp $(docker compose ps -q smp-server):/app/certs/smp_keystore.cer ./certs/smp_keystore.cer
+```
+
+You only need to repeat this if the `smp-certs` volume is reset.
+
+**4. Run the API**
 
 ```bash
 dotnet run --project Backend.API
-# API listens on http://localhost:5000
 ```
+
+| Service | Host | Port |
+|---|---|---|
+| SMP Server | `localhost` | `8443` |
+| REST API | `localhost` | `5000` |
 
 ### Console Client
 
@@ -56,12 +69,19 @@ Available commands: `connect`, `login`, `upload`, `download`, `messages`, `statu
 
 | Key | Default | Description |
 |---|---|---|
-| `Smp:CertPath` | `certs/smpserver.cer` | Path to pinned SMP server certificate |
+| `Smp:CertPath` | `certs/smp_keystore.cer` | Path to pinned SMP server certificate |
 | `Cors:AllowedOrigins` | `http://localhost:3000` | Allowed frontend origins |
 
 Environment variables use `__` as delimiter (e.g. `Smp__CertPath`).
 
 ## API Reference
+
+### Health
+
+#### `GET /health`
+Returns `200 Healthy` when the service is up. Used by Docker for container health checks.
+
+---
 
 ### Session
 
@@ -69,7 +89,7 @@ Environment variables use `__` as delimiter (e.g. `Smp__CertPath`).
 Connect to an SMP server.
 
 ```json
-{ "host": "smp-server", "port": 8443 }
+{ "host": "localhost", "port": 8443 }
 ```
 
 #### `POST /api/session/authenticate`
@@ -163,7 +183,7 @@ Text-based protocol over TLS. Command flow:
 
 ## Certificate Pinning
 
-When `Smp:CertPath` points to an existing `.cer` file, the TLS connection validates the server certificate by comparing thumbprints. If the file is absent, validation is bypassed (useful for local dev without a cert).
+The SMP server generates a self-signed certificate (`certs/smp_keystore.cer`) on first start. The API pins this certificate by comparing thumbprints on every TLS connection. If the cert file is absent, validation is bypassed — useful when running the API outside Docker.
 
 ## CI/CD
 

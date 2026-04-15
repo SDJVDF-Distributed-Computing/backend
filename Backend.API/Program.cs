@@ -32,6 +32,8 @@ builder.Services.AddScoped<GetSessionStatusQueryHandler>();
 
 builder.Services.AddScoped<RequireSessionFilter>();
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -42,6 +44,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors("AllowFrontend");
+app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
